@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repuestos Mauricio - Login</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 font-sans flex items-center justify-center h-screen p-4">
+    
+    <div class="w-full max-w-4xl bg-gray-900 rounded-2xl border border-gray-800 shadow-2xl overflow-hidden flex flex-col md:flex-row h-[550px]">
+        
+        <div class="hidden md:block md:w-1/2 h-full relative">
+            <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=600&auto=format&fit=crop" 
+                 alt="Repuestos de Motocicletas" 
+                 class="w-full h-full object-cover brightness-75">
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/20 to-transparent"></div>
+            <div class="absolute bottom-6 left-6 right-6">
+                <p class="text-xs uppercase tracking-widest text-indigo-400 font-bold">Mantenimiento y Rendimiento</p>
+                <h2 class="text-xl font-bold text-white mt-1">La mejor calidad en repuestos para tu motocicleta.</h2>
+            </div>
+        </div>
+
+        <div class="w-full md:w-1/2 p-8 flex flex-col justify-center bg-gray-900">
+            <div class="text-center mb-6">
+                <h1 class="text-3xl font-bold text-indigo-400 tracking-wider"> Repuestos Mauricio</h1>
+                <p class="text-xs text-gray-400 mt-2">Sistema Central de Inventario y Logística</p>
+            </div>
+
+            {% if error %}
+            <div class="bg-red-500/10 border border-red-500/20 text-red-400 text-xs p-3 rounded-xl mb-4 text-center font-medium">
+                 {{ error }}
+            </div>
+            {% endif %}
+
+            <form action="/login" method="POST" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Usuario de Sistema</label>
+                    <input type="text" name="username" required placeholder="Ej: jaroche" 
+                           class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Contraseña</label>
+                    <input type="password" name="password" required placeholder="••••••••" 
+                           class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
+                </div>
+                <button type="submit" 
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition duration-200 mt-2 shadow-lg shadow-indigo-600/20 text-sm">
+                    Autenticar e Ingresar
+                </button>
+            </form>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini ERP - Repuestos de Motos</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 font-sans">
+    <div class="flex h-screen">
+        <div class="w-64 bg-gray-900 border-r border-gray-800 p-6 flex flex-col justify-between">
+            <div class="text-xl font-bold text-indigo-400 tracking-wider mb-8"> Repuestos Mauricio</div>
+                    <a href="#" class="flex items-center space-x-3 bg-indigo-600 text-white px-4 py-2.5 rounded-lg font-medium">
+                        <span> Dashboard Gerencial</span>
+                    </a>
+                </nav>
+            </div>
+            <div>
+    <a href="/logout" class="text-xs text-red-400 hover:underline block mb-3 font-medium"> Cerrar Sesión</a>
+    <div class="text-xs text-gray-500 border-t border-gray-800 pt-3">Jonathan Aroche</div>
+</div>
+
+        <main class="flex-1 overflow-y-auto p-8">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">Panel de Simulación Gerencial</h1>
+                    <p class="text-sm text-gray-400">Interacción directa entre áreas para evaluar la correlación de datos.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-md">
+                    <div class="text-sm font-semibold text-gray-400 uppercase">Riesgo de Desabastecimiento</div>
+                    <div class="text-3xl font-bold {% if alertas > 0 %}text-red-400 animate-pulse{% else %}text-emerald-400{% endif %} mt-2">
+                        {{ alertas }} Productos en Riesgo
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1"> Criterio de Decisión: Stock actual menor o igual al stock mínimo de seguridad.</p>
+                </div>
+                <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-md">
+                    <div class="text-sm font-semibold text-gray-400 uppercase">Cola de Entregas Activas (Shipping/Delivery)</div>
+                    <div class="text-3xl font-bold text-indigo-400 mt-2">{{ cola|length }} Envíos Pendientes</div>
+                    <p class="text-xs text-gray-500 mt-1">Gestión logística optimizada bajo la estructura lineal FIFO.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <div class="lg:col-span-2 bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-md">
+                    <h3 class="text-lg font-bold mb-4 text-indigo-400"> Área 1: Gestión de Compras y Ventas</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-gray-400">
+                            <thead class="bg-gray-800 text-gray-300 uppercase text-xs">
+                                <tr>
+                                    <th class="p-3">Repuesto (Marca)</th>
+                                    <th class="p-3 text-center">Stock</th>
+                                    <th class="p-3 text-center">Estado Crítico</th>
+                                    <th class="p-3 text-center">Acciones en Vivo</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-800">
+                                {% for p in productos %}
+                                <tr class="hover:bg-gray-800/40 transition">
+                                    <td class="p-3 font-medium text-white">{{ p[1] }} <span class="text-gray-500 text-xs">({{ p[2] }})</span></td>
+                                    <td class="p-3 text-center font-bold {% if p[5] <= p[6] %}text-red-400{% else %}text-gray-300{% endif %}">
+                                        {{ p[5] }} <span class="text-xs text-gray-600 font-normal">(Min: {{ p[6] }})</span>
+                                    </td>
+                                    <td class="p-3 text-center">
+                                        {% if p[5] <= p[6] %}
+                                            <span class="bg-red-500/10 text-red-400 text-xs px-2.5 py-0.5 rounded border border-red-500/20 font-medium">Riesgo Alto</span>
+                                        {% else %}
+                                            <span class="bg-emerald-500/10 text-emerald-400 text-xs px-2.5 py-0.5 rounded border border-emerald-500/20 font-medium">Estable</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="p-3 text-center space-x-2">
+                                        <a href="/vender/{{ p[0] }}" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded font-medium transition inline-block">
+                                             Vender 1
+                                        </a>
+                                        <a href="/comprar/{{ p[0] }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1.5 rounded font-medium transition inline-block">
+                                             Comprar +5
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-md">
+                    <h3 class="text-lg font-bold mb-4 text-indigo-400"> Área 2: Shipping & Delivery (FIFO)</h3>
+                    <div class="space-y-3">
+                        {% if cola|length == 0 %}
+                            <p class="text-sm text-gray-500 text-center py-4">No hay envíos pendientes en la cola.</p>
+                        {% endif %}
+                        {% for c in cola %}
+                        <div class="p-3.5 bg-gray-950 rounded-lg border border-gray-800 flex flex-col justify-between space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="text-sm font-semibold text-white">{{ c[1] }}</div>
+                                    <span class="text-xs text-gray-500">Hora: {{ c[3] }}</span>
+                                </div>
+                                <span class="text-[10px] px-2 py-0.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded font-medium">
+                                    {{ c[2] }}
+                                </span>
+                            </div>
+                            <a href="/despachar/{{ c[0] }}" class="w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white text-xs py-1.5 rounded font-medium transition block">
+                                 Completar Delivery
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Historial de Ventas | Repuestos Mauricio</title>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans">
+
+    <div class="max-w-6xl mx-auto py-12 px-6">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+            <div>
+                <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">Ventas del Día</h1>
+                <p class="text-gray-500 mt-1"><i class="far fa-calendar-alt mr-2"></i> Historial de hoy</p>
+            </div>
+            <a href="/dashboard" class="flex items-center gap-2 bg-indigo-900 hover:bg-black text-white px-6 py-3 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg">
+                <i class="fas fa-arrow-left"></i> Volver al Inicio
+            </a>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            {% if ventas %}
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50 border-b border-gray-100">
+                        <tr class="text-left text-xs font-bold text-gray-400 uppercase tracking-widest">
+                            <th class="px-8 py-5">Cliente</th>
+                            <th class="px-8 py-5">NIT</th>
+                            <th class="px-8 py-5">Teléfono</th>
+                            <th class="px-8 py-5">Fecha</th>
+                            <th class="px-8 py-5 text-right">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        {% for venta in ventas %}
+                        <tr class="hover:bg-indigo-50/30 transition-colors group">
+                            <td class="px-8 py-6">
+                                <button onclick="verDetalle({{ loop.index0 }})" class="text-sm font-bold text-indigo-700 hover:text-indigo-900 underline transition">
+                                    {{ venta.nombre }}
+                                </button>
+                            </td>
+                            <td class="px-8 py-6 text-sm text-gray-600 font-mono">{{ venta.nit }}</td>
+                            <td class="px-8 py-6 text-sm text-gray-600">{{ venta.tel }}</td>
+                            <td class="px-8 py-6 text-sm text-gray-400">{{ venta.fecha }}</td>
+                            <td class="px-8 py-6 text-sm text-right font-black text-indigo-900">Q {{ venta.total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="bg-gray-50 px-8 py-4 border-t border-gray-100">
+                <span class="text-sm text-gray-500 font-semibold">{{ ventas|length }} transacciones realizadas</span>
+            </div>
+            {% else %}
+            <div class="text-center py-24">
+                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-shopping-basket text-3xl text-gray-400"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-700">Aún no hay ventas</h3>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="modalDetalle" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl">
+            <h3 class="text-lg font-bold mb-4 text-gray-800">Productos comprados</h3>
+            <ul id="listaProductos" class="space-y-3 mb-6"></ul>
+            <button onclick="cerrarModal()" class="w-full bg-indigo-900 py-3 rounded-2xl font-bold text-white hover:bg-gray-800 transition">Cerrar</button>
+        </div>
+    </div>
+
+    <script>
+        const listaVentas = {{ ventas | tojson }};
+
+        function verDetalle(index) {
+            const venta = listaVentas[index];
+            const contenedor = document.getElementById('listaProductos');
+            contenedor.innerHTML = ''; 
+
+            // Mostrar productos
+            if(venta.productos && venta.productos.length > 0) {
+                venta.productos.forEach(prod => {
+                    contenedor.innerHTML += `
+                        <li class="flex items-center gap-3 text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">
+                            <i class="fas fa-check-circle text-indigo-500"></i> ${prod}
+                        </li>`;
+                });
+            }
+
+            // Mostrar total al final del modal
+            contenedor.innerHTML += `
+                <li class="mt-4 pt-4 border-t border-gray-200 flex justify-between font-bold text-lg text-gray-900">
+                    <span>Total pagado:</span>
+                    <span>Q ${venta.total}</span>
+                </li>`;
+
+            document.getElementById('modalDetalle').classList.remove('hidden');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalDetalle').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

@@ -1,129 +1,88 @@
-from flask import Flask, render_template, redirect, url_for, request, session
-import sqlite3
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 
 app = Flask(__name__)
-# Llave secreta obligatoria en Flask para encriptar las sesiones de usuario
-app.secret_key = 'llave_secreta_super_segura_para_mauricio'
+app.secret_key = 'clave_secreta_mauricio'
 
-def init_db():
-    conn = sqlite3.connect('erp_motos.db')
-    cursor = conn.cursor()
-    
-    # Área 1: Inventario (Compras y Ventas)
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS productos (
-            id_producto INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT NOT NULL,
-            marca TEXT,
-            precio_costo REAL,
-            precio_venta REAL,
-            stock INTEGER,
-            stock_minimo INTEGER
-        )
-    ''')
-    
-    # Área 2: Logística (Colas FIFO)
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS colas_atencion (
-            id_cola INTEGER PRIMARY KEY AUTOINCREMENT,
-            cliente TEXT,
-            estado TEXT,
-            hora_ingreso TEXT
-        )
-    ''')
-    
-    # Datos base si está vacía
-    cursor.execute("SELECT COUNT(*) FROM productos")
-    if cursor.fetchone()[0] == 0:
-        cursor.executemany("INSERT INTO productos (nombre, marca, precio_costo, precio_venta, stock, stock_minimo) VALUES (?,?,?,?,?,?)", [
-            ('Pastillas de Freno FZ16', 'Brembo', 45.00, 110.00, 5, 5),
-            ('Llanta Delantera 90/90-17', 'Michelin', 180.00, 325.00, 12, 3),
-            ('Aceite de Motor 4T 10W40', 'Motul', 35.00, 75.00, 20, 5)
-        ])
-        cursor.executemany("INSERT INTO colas_atencion (cliente, estado, hora_ingreso) VALUES (?,?,?)", [
-            ('Taller El Esfuerzo (Mayorista)', 'En Espera de Delivery', '22:15'),
-            ('Carlos Gómez (Particular)', 'Preparando Repuesto', '22:20')
-        ])
-    conn.commit()
-    conn.close()
-
-# --- CONTROL DE ACCESO (LOGIN) ---
+@app.route('/')
+def index():
+    return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    error = None
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        usuario_ingresado = request.form.get('username')
+        password_ingresado = request.form.get('password')
         
-        # Validación estricta solicitada
-        if username == 'jaroche' and password == 'tatan2026':
-            session['user'] = username  # Guardamos la sesión activa
+        if usuario_ingresado == "jaroche" and password_ingresado == "tatan2026":
             return redirect(url_for('dashboard'))
         else:
-            return render_template('login.html', error='Credenciales incorrectas. Intente de nuevo.')
+            error = "Usuario o contraseña incorrectos, intenta de nuevo."
             
-    return render_template('login.html', error=None)
+    return render_template('login.html', error=error)
 
-@app.route('/logout')
-def logout():
-    session.pop('user', None)  # Destruye la sesión del usuario
-    return redirect(url_for('login'))
-
-# --- DASHBOARD PRINCIPAL (PROTEGIDO) ---
-
-@app.route('/')
+@app.route('/dashboard')
 def dashboard():
-    # Si el usuario no ha iniciado sesión, lo redirige de inmediato al Login
-    if 'user' not in session:
-        return redirect(url_for('login'))
-        
-    conn = sqlite3.connect('erp_motos.db')
-    cursor = conn.cursor()
-    
-    cursor.execute("SELECT * FROM productos")
-    productos = cursor.fetchall()
-    
-    cursor.execute("SELECT * FROM colas_atencion")
-    cola = cursor.fetchall()
-    
-    cursor.execute("SELECT COUNT(*) FROM productos WHERE stock <= stock_minimo")
-    alertas_desabastecimiento = cursor.fetchone()[0]
-    
-    conn.close()
-    return render_template('dashboard.html', productos=productos, cola=cola, alertas=alertas_desabastecimiento)
+    return render_template('dashboard.html')
 
-# --- ACCIONES INTERACTIVAS (COMPRAS, VENTAS Y DELIVERIES) ---
+@app.route('/agregar_al_carrito', methods=['POST'])
+def agregar_al_carrito():
+    producto = request.json 
+    if 'carrito' not in session:
+        session['carrito'] = []
+    
+    lista_carrito = session['carrito']
+    lista_carrito.append(producto)
+    session['carrito'] = lista_carrito
+    session.modified = True 
+    
+    return jsonify({"mensaje": "Producto agregado", "total": len(session['carrito'])})
 
-@app.route('/vender/<int:id_producto>')
-def vender_producto(id_producto):
-    if 'user' not in session: return redirect(url_for('login'))
-    conn = sqlite3.connect('erp_motos.db')
-    cursor = conn.cursor()
-    cursor.execute("UPDATE productos SET stock = MAX(0, stock - 1) WHERE id_producto = ?", (id_producto,))
-    conn.commit()
-    conn.close()
-    return redirect(url_for('dashboard'))
+@app.route('/ver_carrito')
+def ver_carrito():
+    carrito = session.get('carrito', [])
+    return render_template('carrito.html', carrito=carrito)
 
-@app.route('/comprar/<int:id_producto>')
-def comprar_producto(id_producto):
-    if 'user' not in session: return redirect(url_for('login'))
-    conn = sqlite3.connect('erp_motos.db')
-    cursor = conn.cursor()
-    cursor.execute("UPDATE productos SET stock = stock + 5 WHERE id_producto = ?", (id_producto,))
-    conn.commit()
-    conn.close()
-    return redirect(url_for('dashboard'))
+@app.route('/vaciar_carrito')
+def vaciar_carrito():
+    session.pop('carrito', None)
+    return redirect(url_for('ver_carrito'))
 
-@app.route('/despachar/<int:id_cola>')
-def despachar_cola(id_cola):
-    if 'user' not in session: return redirect(url_for('login'))
-    conn = sqlite3.connect('erp_motos.db')
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM colas_atencion WHERE id_cola = ?", (id_cola,))
-    conn.commit()
-    conn.close()
-    return redirect(url_for('dashboard'))
+# --- RUTA DE REGISTRAR VENTA CON CÁLCULO DE TOTAL ---
+@app.route('/registrar_venta', methods=['POST'])
+def registrar_venta():
+    datos = request.json # Recibe nombre, nit, tel, fecha
+    
+    carrito_actual = session.get('carrito', [])
+    
+    # 1. Guardar nombres de los productos
+    datos['productos'] = [item['nombre'] for item in carrito_actual]
+    
+    # 2. Calcular total de la venta (limpiando el formato "Q 00.00")
+    total_venta = 0.0
+    for item in carrito_actual:
+        # Quitamos la 'Q', quitamos espacios y convertimos a float
+        precio_limpio = item['precio'].replace('Q', '').strip()
+        total_venta += float(precio_limpio)
+    
+    # Guardamos el total formateado a 2 decimales
+    datos['total'] = f"{total_venta:.2f}"
+    
+    if 'ventas' not in session:
+        session['ventas'] = []
+    
+    session['ventas'].append(datos)
+    session.modified = True
+    
+    # Vaciamos el carrito
+    session.pop('carrito', None) 
+    
+    return jsonify({"mensaje": "Venta registrada con éxito", "total": datos['total']})
+
+@app.route('/ver_ventas')
+def ver_ventas():
+    ventas = session.get('ventas', [])
+    return render_template('ventas.html', ventas=ventas)
 
 if __name__ == '__main__':
-    init_db()
     app.run(debug=True)

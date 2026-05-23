@@ -2,117 +2,132 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini ERP - Repuestos de Motos</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Repuestos Mauricio | Gestión Profesional</title>
 </head>
-<body class="bg-gray-950 text-gray-100 font-sans">
-    <div class="flex h-screen">
-        <div class="w-64 bg-gray-900 border-r border-gray-800 p-6 flex flex-col justify-between">
-            <div class="text-xl font-bold text-indigo-400 tracking-wider mb-8"> Repuestos Mauricio</div>
-                    <a href="#" class="flex items-center space-x-3 bg-indigo-600 text-white px-4 py-2.5 rounded-lg font-medium">
-                        <span> Dashboard Gerencial</span>
-                    </a>
-                </nav>
+<body class="bg-gray-50 font-sans text-gray-900">
+
+    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-tools text-indigo-700 text-2xl"></i>
+                <h1 class="text-xl font-extrabold text-gray-800 tracking-tight">Repuestos Mauricio</h1>
             </div>
+            
+            <div class="absolute left-1/2 transform -translate-x-1/2">
+                <div class="bg-white p-1 rounded-full border border-gray-200 shadow-md">
+                    <div class="bg-indigo-900 w-10 h-10 rounded-full flex items-center justify-center">
+                        <i class="fas fa-cog text-white animate-spin-slow"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <a href="#" class="text-sm font-bold border-b-2 border-indigo-700 pb-1">Dashboard</a>
+                <a href="/ver_ventas" class="text-sm font-semibold text-gray-500 hover:text-indigo-700">Ventas</a>
+                <a href="/ver_carrito" class="text-sm font-semibold text-gray-500 hover:text-indigo-700">Carrito</a>
+                <a href="/login" class="bg-indigo-900 text-white px-5 py-2 rounded-full text-xs font-bold hover:bg-gray-800 transition">Salir</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto py-8 px-4 flex gap-8">
+        
+        <aside class="w-1/4 hidden md:block bg-slate-800 p-6 rounded-3xl text-white shadow-2xl">
+            <div class="mb-8">
+                <h3 class="text-xs font-bold uppercase text-indigo-400 mb-4 tracking-wider">Repuestos Generales</h3>
+                <div class="space-y-3 text-sm">
+                    <label class="flex items-center"><input type="checkbox" class="mr-2"> Bosch</label>
+                    <label class="flex items-center"><input type="checkbox" class="mr-2"> SKF</label>
+                    <label class="flex items-center"><input type="checkbox" class="mr-2"> Continental</label>
+                    <label class="flex items-center"><input type="checkbox" class="mr-2"> Mahle</label>
+                    <label class="flex items-center"><input type="checkbox" class="mr-2"> NGK</label>
+                    <label class="flex items-center"><input type="checkbox" class="mr-2"> Gates</label>
+                    <label class="flex items-center"><input type="checkbox" class="mr-2"> Brembo</label>
+                    <label class="flex items-center"><input type="checkbox" class="mr-2"> Denso</label>
+                </div>
+            </div>
+            
+            <div class="mb-8">
+                <h3 class="text-xs font-bold uppercase text-indigo-400 mb-4 tracking-wider">Sistema Eléctrico y Carrocería</h3>
+                <div class="space-y-3 text-sm">
+                    <label class="flex items-center"><input type="checkbox" class="mr-2"> Batería</label>
+                    <label class="flex items-center"><input type="checkbox" class="mr-2"> Luces</label>
+                    <label class="flex items-center"><input type="checkbox" class="mr-2"> Carenados y Espejos</label>
+                    <label class="flex items-center"><input type="checkbox" class="mr-2"> Bujías</label>
+                </div>
+            </div>
+
             <div>
-    <a href="/logout" class="text-xs text-red-400 hover:underline block mb-3 font-medium"> Cerrar Sesión</a>
-    <div class="text-xs text-gray-500 border-t border-gray-800 pt-3">Jonathan Aroche</div>
-</div>
-
-        <main class="flex-1 overflow-y-auto p-8">
-            <div class="flex justify-between items-center mb-8">
-                <div>
-                    <h1 class="text-2xl font-bold text-white">Panel de Simulación Gerencial</h1>
-                    <p class="text-sm text-gray-400">Interacción directa entre áreas para evaluar la correlación de datos.</p>
+                <h3 class="text-xs font-bold uppercase text-indigo-400 mb-4 tracking-wider">Suspensión y Dirección</h3>
+                <div class="space-y-3 text-sm">
+                    <label class="flex items-center"><input type="checkbox" class="mr-2"> Corven</label>
+                    <label class="flex items-center"><input type="checkbox" class="mr-2"> Thompson</label>
+                    <label class="flex items-center"><input type="checkbox" class="mr-2"> GR Parts</label>
+                    <label class="flex items-center"><input type="checkbox" class="mr-2"> TRW</label>
                 </div>
             </div>
+        </aside>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-md">
-                    <div class="text-sm font-semibold text-gray-400 uppercase">Riesgo de Desabastecimiento</div>
-                    <div class="text-3xl font-bold {% if alertas > 0 %}text-red-400 animate-pulse{% else %}text-emerald-400{% endif %} mt-2">
-                        {{ alertas }} Productos en Riesgo
+        <section class="flex-1">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">Repuestos Para Motos</h2>
+
+            <div id="carousel" class="flex gap-6 overflow-x-auto scroll-smooth pb-6" style="scrollbar-width: none;">
+                {% set items = [("Pastillas de Freno", "🛑"), ("Filtros de Aire", "💨"), ("Baterías", "🔋"), ("Filtros de Aceite", "🛢️"), ("Discos de Freno", "💿"), ("Relación de Arrastre", "⛓️"), ("Luces Pidevias", "💡")] %}
+                {% for nombre, icono in items %}
+                <button onclick="filtrarProductos('{{ nombre }}')" class="flex flex-col items-center min-w-[110px] group transition-transform hover:-translate-y-1">
+                    <div class="w-20 h-20 bg-white border-2 border-gray-100 rounded-full flex items-center justify-center mb-3 shadow-lg group-hover:border-indigo-500 group-hover:shadow-indigo-100 transition-all">
+                        <span class="text-3xl">{{ icono }}</span>
                     </div>
-                    <p class="text-xs text-gray-500 mt-1"> Criterio de Decisión: Stock actual menor o igual al stock mínimo de seguridad.</p>
-                </div>
-                <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-md">
-                    <div class="text-sm font-semibold text-gray-400 uppercase">Cola de Entregas Activas (Shipping/Delivery)</div>
-                    <div class="text-3xl font-bold text-indigo-400 mt-2">{{ cola|length }} Envíos Pendientes</div>
-                    <p class="text-xs text-gray-500 mt-1">Gestión logística optimizada bajo la estructura lineal FIFO.</p>
-                </div>
+                    <p class="text-xs font-bold text-gray-700 text-center">{{ nombre }}</p>
+                </button>
+                {% endfor %}
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                
-                <div class="lg:col-span-2 bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-md">
-                    <h3 class="text-lg font-bold mb-4 text-indigo-400"> Área 1: Gestión de Compras y Ventas</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-gray-400">
-                            <thead class="bg-gray-800 text-gray-300 uppercase text-xs">
-                                <tr>
-                                    <th class="p-3">Repuesto (Marca)</th>
-                                    <th class="p-3 text-center">Stock</th>
-                                    <th class="p-3 text-center">Estado Crítico</th>
-                                    <th class="p-3 text-center">Acciones en Vivo</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-800">
-                                {% for p in productos %}
-                                <tr class="hover:bg-gray-800/40 transition">
-                                    <td class="p-3 font-medium text-white">{{ p[1] }} <span class="text-gray-500 text-xs">({{ p[2] }})</span></td>
-                                    <td class="p-3 text-center font-bold {% if p[5] <= p[6] %}text-red-400{% else %}text-gray-300{% endif %}">
-                                        {{ p[5] }} <span class="text-xs text-gray-600 font-normal">(Min: {{ p[6] }})</span>
-                                    </td>
-                                    <td class="p-3 text-center">
-                                        {% if p[5] <= p[6] %}
-                                            <span class="bg-red-500/10 text-red-400 text-xs px-2.5 py-0.5 rounded border border-red-500/20 font-medium">Riesgo Alto</span>
-                                        {% else %}
-                                            <span class="bg-emerald-500/10 text-emerald-400 text-xs px-2.5 py-0.5 rounded border border-emerald-500/20 font-medium">Estable</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="p-3 text-center space-x-2">
-                                        <a href="/vender/{{ p[0] }}" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded font-medium transition inline-block">
-                                             Vender 1
-                                        </a>
-                                        <a href="/comprar/{{ p[0] }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1.5 rounded font-medium transition inline-block">
-                                             Comprar +5
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div id="lista-productos" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8"></div>
+        </section>
+    </main>
 
-                <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-md">
-                    <h3 class="text-lg font-bold mb-4 text-indigo-400"> Área 2: Shipping & Delivery (FIFO)</h3>
-                    <div class="space-y-3">
-                        {% if cola|length == 0 %}
-                            <p class="text-sm text-gray-500 text-center py-4">No hay envíos pendientes en la cola.</p>
-                        {% endif %}
-                        {% for c in cola %}
-                        <div class="p-3.5 bg-gray-950 rounded-lg border border-gray-800 flex flex-col justify-between space-y-3">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <div class="text-sm font-semibold text-white">{{ c[1] }}</div>
-                                    <span class="text-xs text-gray-500">Hora: {{ c[3] }}</span>
-                                </div>
-                                <span class="text-[10px] px-2 py-0.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded font-medium">
-                                    {{ c[2] }}
-                                </span>
-                            </div>
-                            <a href="/despachar/{{ c[0] }}" class="w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white text-xs py-1.5 rounded font-medium transition block">
-                                 Completar Delivery
-                            </a>
+    <script>
+        const productosDB = {
+            "Pastillas de Freno": [{ nombre: "Pastillas Traseras Cerámicas Honda/Hero", precio: "Q 37.00" }, { nombre: "Pastillas Traseras Yamaha YZ125", precio: "Q 35.00" }, { nombre: "Pastillas Delantero Suzuki DR150", precio: "Q 38.00" }, { nombre: "Pastillas Trasera Cerámica Akt 180Ttx", precio: "Q 43.00" }, { nombre: "Pastillas Trasero Pulsar 200NS/Dominar", precio: "Q 41.00" }, { nombre: "Pastillas Trasero SUZUKI DL650/1000", precio: "Q 35.00" }],
+            "Filtros de Aire": [{ nombre: "Filtro Aire Honda XR125/CF Moto", precio: "Q 29.00" }, { nombre: "Filtro Aire Yamaha XTZ150", precio: "Q 32.00" }, { nombre: "Filtro Aire Suzuki Gixxer 150", precio: "Q 36.00" }, { nombre: "Filtro Aire Honda Navi110", precio: "Q 33.00" }, { nombre: "Filtro Aire Benelli TNT 150", precio: "Q 41.00" }, { nombre: "Filtro Aire Honda CB160F/190R", precio: "Q 30.00" }],
+            "Baterías": [{ nombre: "Batería YTX7L-BS AGM 12V 7Ah", precio: "Q 91.00" }, { nombre: "Batería 12N5-3B Gel Discover", precio: "Q 190.00" }, { nombre: "Batería 12V 9Ah Gel", precio: "Q 275.00" }],
+            "Filtros de Aceite": "falta de existencias",
+            "Discos de Freno": [{ nombre: "Disco Trasero TVS Apache RTR 180", precio: "Q 147.00" }, { nombre: "Disco Yamaha Xtz-150 2020", precio: "Q 180.00" }, { nombre: "Disco Delantero Yamaha Libero/YBR", precio: "Q 166.00" }, { nombre: "Disco Delantero Honda XR 125L/150L", precio: "Q 175.00" }, { nombre: "Disco Delantero Suzuki GN 125H", precio: "Q 182.00" }],
+            "Relación de Arrastre": [{ nombre: "Kit Arrastre Dorado TVS Apache 200", precio: "Q 378.00" }, { nombre: "Kit Sprocket Avatar200 17/50T", precio: "Q 135.00" }, { nombre: "Kit Arrastre Dorado Yamaha XTZ 150", precio: "Q 224.00" }, { nombre: "Kit Sprocket SUZUKI 155 15/45T", precio: "Q 125.00" }, { nombre: "Kit Arrastre Dorado Honda XRE/XR 190", precio: "Q 244.00" }],
+            "Luces Pidevias": [{ nombre: "Luz Pide vía Led Panorámica Azul", precio: "Q 26.00" }, { nombre: "Luz Pidevia Sharp Blanco", precio: "Q 27.00" }, { nombre: "Bike Lights Set Wide-Angle", precio: "Q 202.00" }, { nombre: "Luz Pide vía Led Panorámica Blanco", precio: "Q 26.00" }, { nombre: "Luz Roja Freno Triangular", precio: "Q 46.00" }, { nombre: "Luz Pidevia Motocicleta Azul", precio: "Q 34.00" }]
+        };
+
+        function agregarAlCarrito(nombre, precio) {
+            fetch('/agregar_al_carrito', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({nombre: nombre, precio: precio}) })
+            .then(response => response.json())
+            .then(data => alert(nombre + " agregado al carrito! Total en carrito: " + data.total));
+        }
+
+        function filtrarProductos(categoria) {
+            const contenedor = document.getElementById('lista-productos');
+            contenedor.innerHTML = ''; 
+            const datos = productosDB[categoria];
+            if (datos === "falta de existencias") {
+                contenedor.innerHTML = `<div class="col-span-full text-center py-12 text-red-500 font-bold border-2 border-dashed border-red-200 rounded-2xl">❌ Producto agotado temporalmente</div>`;
+                return;
+            }
+            datos.forEach(prod => {
+                contenedor.innerHTML += `
+                    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group">
+                        <h4 class="font-bold text-gray-800 text-sm mb-3">${prod.nombre}</h4>
+                        <div class="flex justify-between items-end">
+                            <p class="text-indigo-700 font-extrabold text-lg">${prod.precio}</p>
+                            <button onclick="agregarAlCarrito('${prod.nombre}', '${prod.precio}')" class="bg-gray-100 p-2 rounded-lg text-gray-600 hover:bg-indigo-900 hover:text-white transition">
+                                <i class="fas fa-shopping-cart text-xs"></i>
+                            </button>
                         </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
-            </div>
-        </main>
-    </div>
+                    </div>`;
+            });
+        }
+        filtrarProductos("Pastillas de Freno");
+    </script>
 </body>
 </html>

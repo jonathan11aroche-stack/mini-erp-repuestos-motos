@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Mi Carrito | Repuestos Mauricio</title>
+</head>
+<body class="bg-gray-100 min-h-screen py-10 px-4">
+    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
+        <div class="bg-indigo-900 p-8 text-white flex justify-between items-center">
+            <h2 class="text-3xl font-extrabold flex items-center gap-3"><i class="fas fa-shopping-cart"></i> Tu Carrito</h2>
+            <a href="/dashboard" class="bg-indigo-700 hover:bg-indigo-600 px-4 py-2 rounded-lg text-sm font-bold transition">← Volver</a>
+        </div>
+
+        {% if carrito %}
+        <div class="p-6">
+            <table class="w-full text-left">
+                <tbody class="divide-y divide-gray-100">
+                    {% for item in carrito %}
+                    <tr>
+                        <td class="py-5 text-gray-700 font-medium">{{ item.nombre }}</td>
+                        <td class="py-5 text-indigo-700 font-extrabold text-right">{{ item.precio }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="mt-8 pt-6 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
+                <a href="/vaciar_carrito" class="text-red-500 hover:text-red-700 font-bold px-4 py-2 transition flex items-center gap-2">
+                    <i class="fas fa-trash-alt"></i> Vaciar Carrito
+                </a>
+                
+                <button type="button" onclick="abrirModal()" class="bg-green-600 text-white px-8 py-3 rounded-2xl font-bold text-lg hover:bg-green-700 transition shadow-lg">
+                    <i class="fas fa-credit-card mr-2"></i> Confirmar Pago
+                </button>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center py-20 text-gray-500">
+            <i class="fas fa-shopping-basket text-6xl mb-4"></i>
+            <p class="text-lg">Tu carrito está vacío.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div id="modal-pago" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-3xl w-full max-w-md shadow-2xl">
+            <h3 class="text-2xl font-bold mb-6 text-gray-800">Datos de Facturación</h3>
+            
+            <div class="mb-4 p-3 bg-indigo-50 rounded-xl text-sm text-indigo-800 font-semibold">
+                <i class="fas fa-calendar-alt mr-2"></i> Fecha: <span id="fecha-display"></span>
+            </div>
+
+            <form onsubmit="procesarPago(event)">
+                <input type="text" id="nombre" placeholder="Nombre completo" required class="w-full p-3 mb-4 border rounded-xl bg-gray-50 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <input type="tel" id="telefono" placeholder="Teléfono" required class="w-full p-3 mb-4 border rounded-xl bg-gray-50 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <input type="text" id="nit" placeholder="NIT" required class="w-full p-3 mb-6 border rounded-xl bg-gray-50 focus:ring-2 focus:ring-indigo-500 outline-none">
+                
+                <div class="flex gap-4">
+                    <button type="button" onclick="cerrarModal()" class="flex-1 p-3 bg-gray-200 hover:bg-gray-300 rounded-xl font-bold text-gray-700 transition">Cancelar</button>
+                    <button type="submit" class="flex-1 p-3 bg-indigo-900 hover:bg-indigo-800 text-white rounded-xl font-bold transition">Finalizar Pago</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Obtener fecha actual en formato local
+        const hoy = new Date().toLocaleDateString('es-GT', { year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('fecha-display').innerText = hoy;
+
+        function abrirModal() {
+            document.getElementById('modal-pago').classList.remove('hidden');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-pago').classList.add('hidden');
+        }
+
+        function procesarPago(event) {
+            event.preventDefault(); // Evita que la página se recargue sola
+            
+            const venta = {
+                nombre: document.getElementById('nombre').value,
+                tel: document.getElementById('telefono').value,
+                nit: document.getElementById('nit').value,
+                fecha: hoy
+            };
+
+            // Enviamos los datos al servidor
+            fetch('/registrar_venta', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(venta)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert("¡Venta registrada con éxito para " + venta.nombre + "!");
+                // Redirigimos al dashboard tras el éxito
+                window.location.href = "/dashboard";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Hubo un error al procesar la venta.");
+            });
+        }
+    </script>
+</body>
+</html>
